@@ -19,7 +19,7 @@ node {
 	props = readProperties  file: """deploy.properties"""   
     }
     
-    stage ('Check-secrets'){
+   /* stage ('Check-secrets'){
     	sh """
 	rm trufflehog | true
 	docker run gesellix/trufflehog --json ${props['deploy.gitURL']} > trufflehog
@@ -33,7 +33,7 @@ node {
          sh 'chmod +x owasp-dependency-check.sh'
          sh 'bash owasp-dependency-check.sh'
          sh 'cat /var/lib/jenkins/OWASP-Dependency-Check/reports/dependency-check-report.xml'
-    }	
+    }*/	
 	
     stage ('create war')
     {
@@ -45,6 +45,7 @@ node {
 	     echo 'creating an image'
 	     docImg="${props['deploy.dockerhub']}/${props['deploy.microservice']}"
              dockerImage = dockerexec "${docImg}"
+	    echo "${dockerImage}"
 	    sh "sudo docker run -p 8083:8080 ${dockerImage}"
 	    
     }    
