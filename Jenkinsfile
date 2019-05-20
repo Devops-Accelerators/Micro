@@ -40,16 +40,18 @@ node {
     	mavenbuildexec "mvn build"
     }
     
-     stage ('Deploy-To-Tomcat') {
-           sshagent(['tomcat']) {
-                sh 'scp -o StrictHostKeyChecking=no target/*.war ubuntu@99.81.179.32:/prod/apache-tomcat-8.5.39/webapps/webapp.war'
-              }      
-           }       
+     stage ('Create Docker Image')
+    { 
+	     echo 'creating an image'
+	     docImg="${props['deploy.dockerhub']}/${props['deploy.microservice']}"
+             dockerImage = dockerexec "${docImg}"
+	    sh'sudo docker run -dp 8083:8080 --name tomcat8 ${dockerImage}'
+    }    
     
     
     stage ('DAST') {
         sshagent(['zap']) {
-         sh 'ssh -o  StrictHostKeyChecking=no ubuntu@54.72.96.92 "docker run -t owasp/zap2docker-stable zap-baseline.py -t http://99.81.179.32:8085/webapp/" || true'
+         sh 'ssh -o  StrictHostKeyChecking=no ubuntu@54.72.96.92 "docker run -t owasp/zap2docker-stable zap-baseline.py -t http://99.81.179.32:8085/app/employee" || true'
       }
     }
 	
