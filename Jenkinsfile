@@ -53,12 +53,12 @@ node {
 	    
     }    
 	stage ('container') {
-		sh "sudo docker run -p 8084:8080 -d devopsaccelerator/micro1"
+		sh "sudo docker run -p 8086:8080 -d devopsaccelerator/micro1"
 	}
     
     stage ('DAST') {
 	   
-         sh 'ssh -o  StrictHostKeyChecking=no ubuntu@54.72.96.92 "docker run -t owasp/zap2docker-stable zap-baseline.py -t http://99.81.179.32:8084/app/employee" || true'
+         sh 'ssh -o  StrictHostKeyChecking=no ubuntu@54.72.96.92 "docker run -t owasp/zap2docker-stable zap-baseline.py -t http://99.81.179.32:8086/app/employee" || true'
       
     }
 	
