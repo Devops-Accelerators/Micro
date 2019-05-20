@@ -54,7 +54,8 @@ node {
     
     
     stage ('DAST') {
-        sshagent(['zap']) {
+	    withCredentials([string(credentialsId:"'zap'", variable: 'zap'){      
+	    
          sh 'ssh -o  StrictHostKeyChecking=no ubuntu@54.72.96.92 "docker run -t owasp/zap2docker-stable zap-baseline.py -t http://99.81.179.32:8083/app/employee" || true'
       }
     }
