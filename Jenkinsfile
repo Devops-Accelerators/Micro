@@ -42,14 +42,19 @@ node {
     
      stage ('Create Docker Image')
     { 
-	     echo 'creating an image'
-	     docImg="${props['deploy.dockerhub']}/${props['deploy.microservice']}"
-             dockerImage = dockerexec "${docImg}"
-	    echo "${dockerImage}"
-	    sh "sudo docker run -p 8083:8080 devopsaccelerator/micro1"
+	    app = docker.build("devopsaccelerator/micro1:1-${BUILD_NUMBER}")
+    }
+	
+	stage('Push Image') {
+		docker.withRegistry('https://registry.hub.docker.com','docker-credentials') {
+			app.push("1-${BUILD_NUMBER}")
+			app.push("latest")
+		}
 	    
     }    
-    
+	stage ('container') {
+		sh "sudo docker run -p 8083:8080 -d devopsaccelerator/micro1"
+	}
     
     stage ('DAST') {
 	    withCredentials([sshagent(credentialsId:"zap", variable: 'zap')]){      
