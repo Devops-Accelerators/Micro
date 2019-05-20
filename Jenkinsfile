@@ -47,6 +47,10 @@ node {
              dockerImage = dockerexec "${docImg}"
 	    
     }    
+	
+	stage ('Container') {
+		sh "sudo docker run -p 8083:8080 ${dockerImage}"
+	}
     
     
     stage ('DAST') {
