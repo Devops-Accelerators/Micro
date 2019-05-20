@@ -45,7 +45,7 @@ node {
 	     echo 'creating an image'
 	     docImg="${props['deploy.dockerhub']}/${props['deploy.microservice']}"
              dockerImage = dockerexec "${docImg}"
-	    sh'sudo docker run -dp 8083:8080 --name tomcat8 ${dockerImage}'
+	    
     }    
     
     
