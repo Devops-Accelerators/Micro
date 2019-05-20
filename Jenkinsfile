@@ -46,7 +46,7 @@ node {
 	     docImg="${props['deploy.dockerhub']}/${props['deploy.microservice']}"
              dockerImage = dockerexec "${docImg}"
 	    echo "${dockerImage}"
-	    sh "sudo docker run -p 8083:8080 ${dockerImage}"
+	    sh "sudo docker run -p 8083:8080 devopsaccelerator/micro1"
 	    
     }    
     
