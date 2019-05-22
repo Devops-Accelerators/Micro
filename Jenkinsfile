@@ -81,22 +81,6 @@ node {
     
     stage ('container-security-scan')
     {
-    	sh """
-	rm -rf tiocsscanner-namespace.yaml || true
-	cat >> tiocsscanner-namespace.yaml <<EOF
-apiVersion: v1
-
-kind: Namespace
-
-metadata: 
-
-    name: tiocsscanner
-
-    labels: 
-
-      name: tiocsscanner"""
-      
-      sh "kubectl apply -f tiocsscanner-namespace.yaml"
       sh """
       rm tiocsscanner-deployment.yaml || true
       cat >> tiocsscanner-deployment.yaml <<EOF
