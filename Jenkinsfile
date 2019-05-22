@@ -85,10 +85,15 @@ node {
 	rm -rf tiocsscanner-namespace.yaml || true
 	cat >> tiocsscanner-namespace.yaml <<EOF
 apiVersion: v1
-kind: Namespace
-metadata: 
+
+  kind: Namespace
+
+  metadata: 
+
     name: tiocsscanner
+
     labels: 
+
       name: tiocsscanner"""
       
       sh "kubectl apply -f tiocsscanner-namespace.yaml"
