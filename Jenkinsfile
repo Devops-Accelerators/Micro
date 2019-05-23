@@ -19,7 +19,7 @@ node {
 	props = readProperties  file: """deploy.properties"""   
     }
     
-    /*stage ('Check-secrets')
+    stage ('Check-secrets')
     {
 	sh "rm trufflehog || true"
 	sh "docker run gesellix/trufflehog --json ${props['deploy.gitURL']} > trufflehog"
@@ -33,7 +33,7 @@ node {
          sh 'chmod +x owasp-dependency-check.sh'
          sh 'bash owasp-dependency-check.sh'
          sh 'cat /var/lib/jenkins/OWASP-Dependency-Check/reports/dependency-check-report.xml'
-    }*/
+    }
     
     stage ('create war')
     {
@@ -71,7 +71,7 @@ node {
     stage ('deploy to cluster')
     {
     	//helmdeploy "${props['deploy.microservice']}"
-	withKubeConfig(credentialsId: 'kubernetes-creds', serverUrl: 'https://35.225.27.58') {
+	withKubeConfig(credentialsId: 'kubernetes-creds', serverUrl: 'https://34.66.171.77') {
 
 		sh """ helm delete --purge ${props['deploy.microservice']} | true"""
 		helmdeploy "${props['deploy.microservice']}"
@@ -81,7 +81,7 @@ node {
     
     stage ('scan-kubernetes')
     {
-    	withKubeConfig(credentialsId: 'kubernetes-creds', serverUrl: 'https://35.225.27.58') 
+    	withKubeConfig(credentialsId: 'kubernetes-creds', serverUrl: 'https://34.66.171.77') 
 	{
 		
 		sh """
@@ -98,6 +98,12 @@ metadata:
 		
 		sh """kubectl create secret generic tio --from-literal=username=$TENABLE_ACCESS_KEY \
 --from-literal=password=$TENABLE_SECRET_KEY --namespace=tiocsscanner"""
+		
+		sh """kubectl create secret generic private_registry --from-literal=username=$REGISTRY_USERNAME \
+--from-literal=password=$REGISTRY_PASSWORD --namespace=tiocsscanner"""
+		
+		sh """kubectl create secret docker-registry jfrog-tio --docker-server=https://tenableio-docker-consec-local.jfrog.io \
+--docker-username=$TENABLE_DOCKER_UNAME --docker-password=$TENABLE_DOCKER_PASS --namespace=tiocsscanner"""
 		
 		sh """
 		cat >> tiocsscanner-deployment.yaml <<EOF
@@ -177,19 +183,19 @@ spec:
             - name: REGISTRY_URI
               value: "<variable>" 
             - name: IMPORT_INTERVAL_MINUTES
-              value: "<variable>" """
+              value: 10 """
 	      
 	      sh "kubectl apply -f tiocsscanner-deployment.yaml"
 
     	}
     }
     
-    stage ('DAST')
+  /*  stage ('DAST')
     {
     	sh """export SERVICE_IP=$(kubectl get svc --namespace default micro -o jsonpath='{.status.loadBalancer.ingress[0].ip}')"""
 	sh """echo http://$SERVICE_IP:80"""
 	sh """docker run -t owasp/zap2docker-stable zap-baseline.py -t http://$SERVICE_IP:80/app/employee"""
-    }
+    } */
 	
 }
 
