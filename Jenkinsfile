@@ -11,7 +11,7 @@ def repoName;
 def credentials = 'docker-credentials';
 
 node {
-    stage('Checkout Code')
+    stage ('Checkout Code')
     {
 	checkout scm
 	workspace = pwd() 
