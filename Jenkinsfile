@@ -11,10 +11,10 @@ def repoName;
 def credentials = 'docker-credentials';
 
 node {
-    stage ('Checkout Code')
+    stage('Checkout Code')
     {
 	checkout scm
-	workspace = pwd () 
+	workspace = pwd() 
 	     sh "ls -lat"
 	props = readProperties  file: """deploy.properties"""   
     }
